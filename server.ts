@@ -292,6 +292,8 @@ async function createServer() {
        }
     }
     if (!response) throw lastModelError;
+      const rawText = response.text;
+      if (!rawText) {
         res.status(502).json({
           error: "Received an empty evaluation response from Gemini. Please try again.",
         });

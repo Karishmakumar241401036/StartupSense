@@ -271,7 +271,7 @@ async function createServer() {
 
       const response = await generateWithRetry(() =>
         ai.models.generateContent({
-          model: "gemini-4-hydrogen",
+          model:"gemini-2.5-flash",
           contents: prompt,
           config: {
             systemInstruction:

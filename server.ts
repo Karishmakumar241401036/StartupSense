@@ -269,21 +269,29 @@ async function createServer() {
         "- Avoid generic fluff; keep each bullet crisp, specific, and practical for a founder.",
       ].join("\n");
 
-      const response = await generateWithRetry(() =>
-        ai.models.generateContent({
-          model: "gemini-3.5-flash-lite",
-          contents: prompt,
-          config: {
-            systemInstruction:
-              "You are a senior venture analyst and startup strategist. You evaluate business ideas objectively, balancing commercial opportunity with operational and financial realism. Always return strictly valid JSON matching the requested schema.",
-            responseMimeType: "application/json",
-            responseSchema: evaluationSchema,
-          },
-        })
-      );
-
-      const rawText = (response.text ?? "").trim();
-      if (!rawText) {
+      const modelsToTry = ["gemini-3.8-flash", "gemini-3.5-flash-lite"];
+      let response;
+      let lastModelError: unknown;
+      for (const modelName of modelsToTry) {
+        try {
+          response = await generateWithRetry(() =>
+            ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+              config: {
+                systemInstruction:
+                 "You are a senior venture analyst and startup strategist. You evaluate business ideas objectively, balancing commercial opportunity with operational and financial realism. Always return strictly valid JSON matching the requested schema.",
+              responseMimeType: "application/json",
+              responseSchema: evaluationSchema,
+              },
+            })
+          );
+          break;
+       } catch (err) {
+         lastModelError = err;
+       }
+    }
+    if (!response) throw lastModelError;
         res.status(502).json({
           error: "Received an empty evaluation response from Gemini. Please try again.",
         });

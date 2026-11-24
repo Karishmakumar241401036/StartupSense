@@ -268,8 +268,13 @@ async function createServer() {
         "- Competitor suggestions must be realistic research leads (existing regional/global players or status-quo alternatives) with concrete differentiation angles.",
         "- Avoid generic fluff; keep each bullet crisp, specific, and practical for a founder.",
       ].join("\n");
-
-      const modelsToTry = ["gemini-3.8-flash", "gemini-3.5-flash-lite"];
+      const modelsToTry = [
+        "gemini-3.5-flash-lite",
+        "gemini-3.6-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-4-hydrogen",
+        "gemini-3-flash-preview",
+      ];
       let response;
       let lastModelError: unknown;
       for (const modelName of modelsToTry) {
